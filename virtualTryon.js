@@ -72,14 +72,6 @@ const VirtualTryOn = ({ initialVtoId, onClose, urlSlug, customer, pdpData, trans
     // })
   }
 
-  const toggleVisiblityTryon = (f) => {
-    console.log('here');
-    const getIframe = containerRef.current.querySelector('iframe');
-
-    console.log(getIframe);
-    //getIframe.hidden = true;
-  }
-
   const createWidget = async () => {
     if (!widget) {
       const container = containerRef.current
@@ -112,13 +104,23 @@ const VirtualTryOn = ({ initialVtoId, onClose, urlSlug, customer, pdpData, trans
     await loadProduct(variationCode)
   }
 
+  const toggleWidgetVisibility = (state) => {
+  {
+    /** @type {HTMLElement} */
+    const element = containerRef.current.querySelector('iframe');
+    if(element === null) throw `Widget Iframe not found in container`;
+    element.hidden = state;
+  }
+
   useEffect(async () => {
     if (initialVtoId) {
       await createWidget()
+      toggleWidgetVisibility(false);
       await loadProduct(initialVtoId)
 
       if (view === '3d') {
         await switchView()
+        toggleWidgetVisibility(true);
       }
       setVtoLoading(LOADING_STATES.MID)
       await widget.fetchFitInfo()
